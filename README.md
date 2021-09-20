@@ -9,5 +9,4 @@
   - NRTA TV Registrations Overview (~monthly)
   - NRTA TV Registrations Record Table (~monthly)
   - ChinaFilm Documentary Registrations Overview (~bi-annual)
-  - ChinaFilm Documentary 
- 
+  - ChinaFilm Documentary (~bi-annual)
