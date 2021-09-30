@@ -1,6 +1,6 @@
-# Article is used to generate articles from data analysis on the film, TV and Web Content records.
+## Article provides a set of tools to create analysis reports based on film, TV and Web Content data.
 
-# Articles include:
+## Current Articles include:
   - ChinaFilm Registrations Overview (~monthly)
   - ChinaFilm Enhanced Record Table (~monthly)
   - ChinaFilm Release Overview (~monthly)
