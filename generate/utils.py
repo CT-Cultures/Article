@@ -4,8 +4,10 @@ Created on Fri Oct  1 22:11:14 2021
 
 @author: VXhpUS
 """
-
+import sys
+import pandas as pd
 import numpy as np
+import re
 import matplotlib as mp
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -26,6 +28,8 @@ import wordcloud
 from PIL import Image as pil
 import matplotlib as mp
 from collections import Counter
+
+#%% generaate_word_image
 
 path_font = '/content/drive/MyDrive/Github/Article/fonts/STHUPO.TTF'
 path_img = '/content/drive/MyDrive/Github/Article/img'
@@ -89,3 +93,64 @@ def generate_word_image(ls_words,
   image.save(fp_generated_img)
 
   return fp_generated_img
+
+#%% Predict Title
+
+def predict_title(ls_summary,
+                  batch_size:int=8,
+                 ):
+    
+    import torch
+    from transformers import BertTokenizer, BartForConditionalGeneration
+    
+    # assign device
+    if torch.cuda.device_count() > 0:
+      device = 'cuda:' + str(torch.cuda.current_device())
+    else:
+      device = 'cpu'
+    
+    # Instantiate tokenizer and model
+    checkpoint = "/content/drive/MyDrive/Github/Content/tools/models/PredTitle-10000"
+    tokenizer = BertTokenizer.from_pretrained(checkpoint)
+    model = BartForConditionalGeneration.from_pretrained(checkpoint)
+    model.to(device)
+    model.eval()
+    
+    
+    i = 0
+    L = len(ls_summary)
+    predictions = []
+    while i < L:
+      inputs = tokenizer(ls_summary[i:i+batch_size],
+                               padding=True,
+                               max_length=512, 
+                               truncation=True, 
+                               return_tensors='pt')
+      inputs.to(device)
+      summary_ids = model.generate(input_ids=inputs['input_ids'],
+                                 num_beams=4,
+                                 min_length=0,
+                                 max_length=32
+                                 )
+      
+      ret = [tokenizer.decode(g, 
+                              skip_specical_tokens=True, 
+                              clean_up_tokenization_spaces=True
+                              ) 
+             for g in summary_ids
+            ]
+      
+      predictions.extend(ret)
+      i += batch_size
+      
+      def remove_specials(x):
+          x = re.sub(' ', '', x)
+          x = re.sub('\[CLS\]', '', x)
+          x = re.sub('\[PAD\]', '', x)
+          x = re.sub('\[SEP\]', '', x)
+          return x
+      
+      predictions = [remove_specials(p) for p in predictions]
+      return predictions
+      
+
