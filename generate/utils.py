@@ -29,8 +29,174 @@ from PIL import Image as pil
 import matplotlib as mp
 from collections import Counter
 
-#%% generaate_word_image
+# set path
+path_img = '/content/drive/MyDrive/Github/Article/img'
 
+#%%
+def plot_type(df, issue_name:str, return_df=False):
+  df = df.copy()
+  df_n_type = df.groupby('电影类别')['电影类别'].count().rename('数量'
+    ).sort_values(ascending=False)
+  
+  labels =[]
+  for label, count in zip(df_n_type.index.map(lambda x: x[:2]),df_n_type):
+    labels.append('{}片 {}'.format(label, count))
+
+  explode = [0]*df_n_type.shape[0]
+  explode[0] = 0.1
+  explode = tuple(explode)
+  plt.clf()
+  plt.rcParams['figure.figsize'] = [8, 8]
+  plt.rcParams['axes.facecolor'] = 'white'
+  ax = df_n_type.plot.pie(
+      #y='数量',
+      #grid = True,
+      fontsize = 12,
+      colors=sns.color_palette("Set2"),
+      explode = explode,
+      labels=['']*df_n_type.shape[0],
+      startangle = 45,
+      radius=1.2,
+      #autopct='%1.1f%%',
+  )
+  ax.set_title("电影类别",fontsize=24, pad=20)
+  #ax.grid(color='gray', linestyle='-', linewidth=0.5)
+  ax.legend(fontsize=14, labels=labels, loc='lower left')
+  ax.set_xlabel('',fontsize= 18)
+  #ax.set_xticklabels(df_n_time['年代'], fontsize=12)
+  ax.set_ylabel("",fontsize= 18)
+
+  fp = path_img + '/df_Reg_plot_type_{}.png'.format(issue_name)
+  plt.savefig(fp, bbox_inches='tight')
+
+  plt.show()
+  if return_df:
+    return fp, df_n_type
+  return fp
+  
+#%% plot time
+def plot_time(df, issue_name:str, return_df=False) -> str:
+  """
+  This function makes a genre plot with df
+  df: a pandas DataFrame containing at least the following columns:
+    ['年代','']
+
+  returns
+    str: filpath to saved plot
+    df: grouped pandas DataFrame
+  """
+  df = df.copy()
+  # plot genre in barh format
+  plt.rcParams['figure.figsize'] = [6, 3]
+ 
+  dft = df.groupby('年代')['年代'].count().rename('数量')
+  idx_time = dft.index
+  idx_ordered = []
+  for time in ['古代', '近代', '现代', '当代']:
+    if time in idx_time:
+      idx_ordered.append(time)
+  dft = dft.reindex(idx_ordered)
+  x = ['古代\n<1840', '近代\n1840-1919', '现代\n1919-1949', '当代\n>1949']
+
+  fig, ax = plt.subplots()
+  ax.stem(x, dft, linefmt='lightsteelblue', 
+          label = dft,
+          basefmt='C4-', markerfmt='C9o',
+          use_line_collection=True)
+
+  for x_,y_ in zip(x,dft):
+    ax.annotate('{}部'.format(y_), xy=(x_,y_+6), 
+                fontsize=18, color='royalblue', ha="center")
+
+  ax.set_title("年代",fontsize= 24, pad=20)
+  ax.spines['top'].set_visible(False)
+  ax.spines['right'].set_visible(False)
+  ax.spines['bottom'].set_visible(False)
+  ax.spines['left'].set_visible(False)
+  ax.get_yaxis().set_visible(False)
+  ax.set_xticklabels(x, fontsize=12)
+  #ax.legend(fontsize=14)
+  #ax.set_xlabel('年代',fontsize= 18)
+  fp = path_img + '/df_Reg_time_{}.png'.format(issue_name)
+  plt.savefig(fp, bbox_inches='tight')
+
+  plt.show()
+  if return_df:
+    return fp, dft
+  return fp
+
+#%% plot genre
+def plot_genre(df, name:str, stacked=False, return_df=False) -> str:
+  """
+  This function makes a genre plot with df
+  df: a pandas DataFrame containing at least the following columns:
+    ['电影类别','类型_ext']
+
+  returns
+    str: filpath to saved plot
+    df: grouped pandas DataFrame
+  """
+  df = df.copy()
+
+  # plot genre in barh format, stack movie types
+  if stacked:
+    sns.color_palette("Set2")
+    plt.rcParams['figure.figsize'] = [6, 10]
+    dfg = df.groupby(['类型_ext', '电影类别']).size().unstack()
+
+    # check which types exist in current publication
+    # conform movie types in the designated order
+    col_types_ = df['电影类别'].unique()
+    col_types = []
+    for type_ in ['故事影片', '合拍影片', '动画影片', '纪录影片', '科教影片', '特种影片']:
+      if type_ in col_types_:
+        col_types.append(type_)
+    
+    dfg = dfg[col_types]
+    dfg = dfg.fillna(0).sort_values(['故事影片'], ascending=True)
+    ax = dfg.plot.barh(stacked=True, 
+                         color=sns.color_palette("Set2"),
+                         grid=True
+          )
+    ax.set_xlabel('数量',fontsize= 18)
+    ax.set_ylabel("类型",fontsize= 18)
+    ax.set_title('{}'.format('类型分布'),fontsize= 24, pad=20)
+    ax.legend(fontsize=22)
+  
+  # plot genre in bar format
+  else:
+    dfg = df.groupby('类型_ext')['类型_ext'].count().rename('数量'
+      ).reset_index().sort_values('数量', ascending=False)
+
+    plt.clf()
+    plt.rcParams['figure.figsize'] = [10, 4]
+    plt.rcParams['axes.facecolor'] = 'white'
+    ax = dfg.plot(
+        kind = 'bar',
+        grid = True,
+        fontsize = 22,
+        rot = 0,
+        color = ['violet'],
+    )
+    ax.set_title('{}'.format(name),fontsize= 24, pad=20)
+    ax.spines['top'].set_color('black')
+    ax.spines['bottom'].set_color('black')
+    ax.spines['left'].set_color('black')
+    ax.spines['right'].set_color('black')
+    ax.grid(color='gray', linestyle='-', linewidth=0.5)
+    ax.set_xlabel('类型',fontsize= 18)
+    ax.set_xticklabels(df_n_genre['类型_ext'], fontsize=12)
+    ax.set_ylabel("数量",fontsize= 18)
+    ax.legend(fontsize=22)
+  
+  fp = path_img + '/df_Reg_plot_genre_{}.png'.format(name)
+  plt.savefig(fp, bbox_inches='tight')
+  plt.show()
+  if return_df:
+    return fp, dfg
+  return fp
+
+#%% generate_word_image
 path_font = '/content/drive/MyDrive/Github/Article/fonts/STHUPO.TTF'
 path_img = '/content/drive/MyDrive/Github/Article/img'
 
