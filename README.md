@@ -1,4 +1,6 @@
-## Article provides a set of tools to create analysis reports based on film, TV and Web Content data.
+# Auto Media Reports
+
+## This repo automatically generate analytical reports on film, TV, Web content registration and releass in Mainland China.
 
 ## See Doc folder for genreated articles.
 ### Current Articles include:
