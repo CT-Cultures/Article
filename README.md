@@ -1,8 +1,6 @@
-## Article provides a set of tools to create analysis reports based on film, TV and Web Content data.
+# Article provides a set of tools to create analysis reports based on film, TV and Web Content data.
 
-## See Doc folder for genreated articles.
-## Alternatively, the edited version of the articles are available via Wechat subscription to ContentAI.
-
+# See Doc folder for genreated articles.
 ## Current Articles include:
   - ChinaFilm Registrations Overview (~monthly)
   - ChinaFilm Enhanced Record Table (~monthly)
