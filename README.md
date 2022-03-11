@@ -2,16 +2,16 @@
 
 ## See Doc folder for genreated articles.
 ### Current Articles include:
-  <ul> ChinaFilm Registrations Overview (~monthly)
-  <ul> ChinaFilm Enhanced Record Table (~monthly)
-  <ul> ChinaFilm Release Overview (~monthly)
-  <ul> ChinaFilm Release with Project History Track (~monthly)
-  <ul> ChinaFilm Release Enhanced Record Table (~monthly)
-  <ul> NRTA TV Registrations Overview (~monthly)
-  <ul> NRTA TV Registrations Record Table (~monthly)
-  <ul> ChinaFilm Documentary Registrations Overview (~bi-annual)
-  <ul> ChinaFilm Documentary (~bi-annual)
-  <ul> ZGDYPW (~3-to-4 times per month)
+  <li> ChinaFilm Registrations Overview (~monthly)
+  <li> ChinaFilm Enhanced Record Table (~monthly)
+  <li> ChinaFilm Release Overview (~monthly)
+  <li> ChinaFilm Release with Project History Track (~monthly)
+  <li> ChinaFilm Release Enhanced Record Table (~monthly)
+  <li> NRTA TV Registrations Overview (~monthly)
+  <li> NRTA TV Registrations Record Table (~monthly)
+  <li> ChinaFilm Documentary Registrations Overview (~bi-annual)
+  <li> ChinaFilm Documentary (~bi-annual)
+  <li> ZGDYPW (~3-to-4 times per month)
 
 ## Ways to Contribute
 
